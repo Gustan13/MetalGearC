@@ -3,6 +3,7 @@
 
 #include "entity.h"
 #include "enemy.h"
+#include "walls.h"
 
 void updateAll(EntityContainer *container);
 

@@ -3,7 +3,7 @@
 void updateEnemy(Entity *enemy)
 {
     EnemyModule *enemyModule = ((EnemyModule *)(enemy->extraModule));
-    int prevIndex = enemyModule->index;
+    // int prevIndex = enemyModule->index;
 
     if (enemyModule->index < 0)
         enemyModule->index = enemyModule->pathSize - 1;

@@ -143,8 +143,10 @@ void drawEntities(EntityContainer *container, SDL_Renderer *renderer)
     {
         if (e->type == PLAYER)
             SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
-        else
+        else if (e->type == SOLDIER)
             SDL_SetRenderDrawColor(renderer, 0xff, 0x00, 0x00, 0xff);
+        else
+            SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0x00, 0xff);
         SDL_Rect fillRect = {e->x, e->y, 16, 16};
         SDL_RenderFillRect(renderer, &fillRect);
     }

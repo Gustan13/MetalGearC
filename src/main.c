@@ -5,6 +5,7 @@
 #include "texture.h"
 #include "entity.h"
 #include "enemy.h"
+#include "player.h"
 #include "update.h"
 
 #include <stdio.h>
@@ -39,6 +40,8 @@ int main(void)
     side_t path[] = {FORWARD, RIGHT, FORWARD, DOWN, FORWARD, LEFT, FORWARD, UP};
     addEntity(container, createEntity(200, 100, SOLDIER, createEnemy(path, 8)));
 
+    addEntity(container, createEntity(80, 80, WALL, NULL));
+
     while (running)
     {
         while (SDL_PollEvent(&e) != 0)
@@ -49,23 +52,7 @@ int main(void)
             handle_input(&e, &current_pressed);
         }
 
-        switch (current_pressed)
-        {
-        case SDLK_w:
-            player->y -= 1;
-            break;
-        case SDLK_s:
-            player->y += 1;
-            break;
-        case SDLK_a:
-            player->x -= 1;
-            break;
-        case SDLK_d:
-            player->x += 1;
-            break;
-        default:
-            break;
-        }
+        playerMove(container, player, &current_pressed);
 
         SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
         SDL_RenderClear(renderer);
