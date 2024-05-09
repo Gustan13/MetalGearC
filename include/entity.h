@@ -9,7 +9,8 @@
 enum
 {
     PLAYER,
-    SOLDIER
+    SOLDIER,
+    WALL
 };
 
 typedef enum
