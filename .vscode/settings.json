@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "sdl_image.h": "c",
+        "sdl.h": "c",
+        "sdl_version.h": "c",
+        "input.h": "c"
+    }
+}
