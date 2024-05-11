@@ -1,9 +1,14 @@
 #include "enemy.h"
+#include <math.h>
 
-void updateEnemy(Entity *enemy)
+void updateEnemy(EntityContainer *container, Entity *enemy, Entity *player, int *alert)
 {
     EnemyModule *enemyModule = ((EnemyModule *)(enemy->extraModule));
-    // int prevIndex = enemyModule->index;
+
+    checkEnemySight(container, enemy, player, alert);
+
+    if (*alert)
+        return;
 
     if (enemyModule->index < 0)
         enemyModule->index = enemyModule->pathSize - 1;
@@ -91,4 +96,74 @@ int moveEnemyForward(Entity *entity)
     }
 
     return 2;
+}
+
+void checkEnemySight(EntityContainer *container, Entity *enemy, Entity *player, int *alert)
+{
+    switch (enemy->side)
+    {
+    case LEFT:
+        *alert = checkEnemyHorizontal(container, enemy, player, LEFT);
+        break;
+    case RIGHT:
+        *alert = checkEnemyHorizontal(container, enemy, player, RIGHT);
+        break;
+    case UP:
+        *alert = checkEnemyVertical(container, enemy, player, UP);
+        break;
+    case DOWN:
+        *alert = checkEnemyVertical(container, enemy, player, DOWN);
+        break;
+
+    default:
+        break;
+    }
+}
+
+int checkEnemyHorizontal(EntityContainer *container, Entity *enemy, Entity *player, side_t direction)
+{
+    if ((int)(player->y / 16) != (int)(enemy->y / 16))
+        return 0;
+
+    if (direction == LEFT && player->x > enemy->x)
+        return 0;
+    else if (direction == RIGHT && player->x < enemy->x)
+        return 0;
+
+    for (Entity *e = container->first; e != NULL; e = e->nextEntity)
+    {
+        if (e->type != WALL)
+            continue;
+        if ((int)(e->y / 16) != (int)(enemy->y / 16))
+            continue;
+        if (direction == LEFT && player->x < e->x)
+            return 0;
+        if (direction == RIGHT && player->x > e->x)
+            return 0;
+    }
+    return 1;
+}
+
+int checkEnemyVertical(EntityContainer *container, Entity *enemy, Entity *player, side_t direction)
+{
+    if ((int)(player->x / 16) != (int)(enemy->x / 16))
+        return 0;
+
+    if (direction == UP && player->y > enemy->y)
+        return 0;
+    else if (direction == DOWN && player->y < enemy->y)
+        return 0;
+
+    for (Entity *e = container->first; e != NULL; e = e->nextEntity)
+    {
+        if (e->type != WALL)
+            continue;
+        if ((int)(e->x / 16) != (int)(enemy->x / 16))
+            continue;
+        if (direction == UP && player->y < e->y)
+            return 0;
+        if (direction == DOWN && player->y > e->y)
+            return 0;
+    }
+    return 1;
 }

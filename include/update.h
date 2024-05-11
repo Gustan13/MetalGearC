@@ -5,6 +5,6 @@
 #include "enemy.h"
 #include "walls.h"
 
-void updateAll(EntityContainer *container);
+void updateAll(EntityContainer *container, Entity *player, int *alert);
 
 #endif
