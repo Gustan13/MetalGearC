@@ -23,6 +23,7 @@ int main(void)
     Entity *player = NULL;
 
     int running = 1;
+    int alert = 0;
     SDL_Keycode current_pressed = 0;
 
     if (init(&window, &renderer))
@@ -63,7 +64,7 @@ int main(void)
 
         // UPDATE STUFF
 
-        updateAll(container);
+        updateAll(container, player, &alert);
 
         SDL_Delay(10);
     }
