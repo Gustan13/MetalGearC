@@ -44,6 +44,7 @@ Entity *createEntity(int x, int y, int type, void *extraModule)
 
     newEntity->nextEntity = NULL;
     newEntity->extraModule = extraModule;
+    newEntity->side = UP;
 
     return newEntity;
 }

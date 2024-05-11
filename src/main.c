@@ -39,9 +39,11 @@ int main(void)
     addEntity(container, player);
 
     side_t path[] = {FORWARD, RIGHT, FORWARD, DOWN, FORWARD, LEFT, FORWARD, UP};
-    addEntity(container, createEntity(200, 100, SOLDIER, createEnemy(path, 8)));
+    addEntity(container, createEntity(144, 80, SOLDIER, createEnemy(path, 8)));
 
     addEntity(container, createEntity(80, 80, WALL, NULL));
+    addEntity(container, createEntity(96, 80, WALL, NULL));
+    addEntity(container, createEntity(96, 96, WALL, NULL));
 
     while (running)
     {

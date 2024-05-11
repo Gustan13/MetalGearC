@@ -5,10 +5,13 @@ void updateEnemy(EntityContainer *container, Entity *enemy, Entity *player, int 
 {
     EnemyModule *enemyModule = ((EnemyModule *)(enemy->extraModule));
 
-    checkEnemySight(container, enemy, player, alert);
-
     if (*alert)
+    {
+        enemyAlertMovement(container, enemy, player);
         return;
+    }
+
+    checkEnemySight(container, enemy, player, alert);
 
     if (enemyModule->index < 0)
         enemyModule->index = enemyModule->pathSize - 1;
@@ -23,9 +26,9 @@ void updateEnemy(EntityContainer *container, Entity *enemy, Entity *player, int 
                 printf("Arrived\n");
                 enemyModule->timer = TIMER;
             }
+            return;
         }
-        else
-            enemyModule->timer--;
+        enemyModule->timer--;
     }
     else
     {
@@ -72,11 +75,6 @@ int moveEnemyForward(Entity *entity)
     if (entity->type != SOLDIER)
         return 0;
 
-    if (
-        ((EnemyModule *)entity->extraModule)->dx == entity->x &&
-        ((EnemyModule *)entity->extraModule)->dy == entity->y)
-        return 1;
-
     switch (entity->side)
     {
     case LEFT:
@@ -94,6 +92,11 @@ int moveEnemyForward(Entity *entity)
     default:
         break;
     }
+
+    if (
+        ((EnemyModule *)entity->extraModule)->dx == entity->x &&
+        ((EnemyModule *)entity->extraModule)->dy == entity->y)
+        return 1;
 
     return 2;
 }
@@ -136,9 +139,9 @@ int checkEnemyHorizontal(EntityContainer *container, Entity *enemy, Entity *play
             continue;
         if ((int)(e->y / 16) != (int)(enemy->y / 16))
             continue;
-        if (direction == LEFT && player->x < e->x)
+        if (direction == LEFT && player->x < e->x && enemy->x > e->x)
             return 0;
-        if (direction == RIGHT && player->x > e->x)
+        if (direction == RIGHT && player->x > e->x && enemy->x < e->x)
             return 0;
     }
     return 1;
@@ -160,10 +163,57 @@ int checkEnemyVertical(EntityContainer *container, Entity *enemy, Entity *player
             continue;
         if ((int)(e->x / 16) != (int)(enemy->x / 16))
             continue;
-        if (direction == UP && player->y < e->y)
+        if (direction == UP && player->y < e->y && enemy->y > e->y)
             return 0;
-        if (direction == DOWN && player->y > e->y)
+        if (direction == DOWN && player->y > e->y && enemy->y < e->y)
             return 0;
     }
+    return 1;
+}
+
+void enemyAlertMovement(EntityContainer *container, Entity *enemy, Entity *player)
+{
+    int xDist = (player->x + 8) - (enemy->x + 8);
+    int yDist = (player->y + 8) - (enemy->y + 8);
+
+    if (moveEnemyForward(enemy) == 1)
+    {
+        printf("%d %d\n", xDist, yDist);
+        if (abs(xDist) > abs(yDist))
+            enemy->side = xDist > 0 ? (RIGHT) : (LEFT);
+        else
+            enemy->side = yDist > 0 ? (DOWN) : (UP);
+
+        calculateEnemyDestination(enemy);
+
+        if (checkForObstacle(container, enemy))
+            return;
+
+        for (int i = 0; i < 4; i++)
+        {
+            enemy->side = i;
+            calculateEnemyDestination(enemy);
+            if (checkForObstacle(container, enemy))
+                return;
+        }
+    }
+}
+
+int checkForObstacle(EntityContainer *container, Entity *enemy)
+{
+    EnemyModule *enemyModule = ((EnemyModule *)(enemy->extraModule));
+    int eX, eY;
+
+    for (Entity *e = container->first; e != NULL; e = e->nextEntity)
+    {
+        if (e->type != WALL)
+            continue;
+        eX = (int)(e->x / 16);
+        eY = (int)(e->y / 16);
+
+        if (eX == enemyModule->dx / 16 && eY == enemyModule->dy / 16)
+            return 0;
+    }
+
     return 1;
 }

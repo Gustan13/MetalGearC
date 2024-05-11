@@ -8,9 +8,11 @@
 void updateEnemy(EntityContainer *container, Entity *enemy, Entity *player, int *alert);
 void calculateEnemyDestination(Entity *enemy);
 int moveEnemyForward(Entity *entity);
+void enemyAlertMovement(EntityContainer *container, Entity *enemy, Entity *player);
 
 void checkEnemySight(EntityContainer *container, Entity *enemy, Entity *player, int *alert);
 int checkEnemyHorizontal(EntityContainer *container, Entity *enemy, Entity *player, side_t direction);
 int checkEnemyVertical(EntityContainer *container, Entity *enemy, Entity *player, side_t direction);
+int checkForObstacle(EntityContainer *container, Entity *enemy);
 
 #endif
